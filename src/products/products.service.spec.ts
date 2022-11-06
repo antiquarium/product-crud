@@ -28,7 +28,24 @@ describe('ProductsService', () => {
     repositoryMock = module.get(getRepositoryToken(Product));
   });
 
-  it('should be defined', () => {
-    return;
+  describe('createProduct()', () => {
+    it('saves a newly created product in the repository', async () => {
+      const input: CreateProductDTO = {
+        Name: "product's name",
+        Price: 1.23,
+      };
+      const product: Product = {
+        ...input,
+        Id: 'uniqueId',
+        UpdateDate: new Date('2022-11-06T15:08:58.893Z'),
+      };
+      repositoryMock.create.mockReturnValue(product);
+
+      const createdProduct = await service.createProduct(input);
+
+      expect(createdProduct).toEqual(product);
+      expect(repositoryMock.save).toHaveBeenCalledWith(product);
+      expect(repositoryMock.save).toHaveBeenCalledTimes(1);
+    });
   });
 });

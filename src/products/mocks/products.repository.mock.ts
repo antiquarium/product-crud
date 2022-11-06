@@ -7,4 +7,7 @@ export type MockType<T> = {
 
 export const productsRepositoryMockFactory: () => MockType<
   Repository<Product>
-> = () => ({});
+> = () => ({
+  create: jest.fn((o) => o),
+  save: jest.fn(async (o) => Promise.resolve(o)),
+});
