@@ -30,6 +30,31 @@ describe('ProductsService', () => {
     repositoryMock = module.get(getRepositoryToken(Product));
   });
 
+  describe('getProducts()', () => {
+    it('returns all products from the repository', async () => {
+      const products: Product[] = [
+        {
+          Name: 'product 1',
+          Price: 1.23,
+          Id: 'uniqueId1',
+          UpdateDate: new Date('2022-11-06T15:08:58.893Z'),
+        },
+        {
+          Name: 'product 2',
+          Price: 4.5,
+          Id: 'uniqueId2',
+          UpdateDate: new Date('2022-11-07T16:09:58.893Z'),
+        },
+      ];
+      repositoryMock.find.mockReturnValue(products);
+
+      const returnedProducts = await service.getProducts();
+
+      expect(returnedProducts).toEqual(products);
+      expect(repositoryMock.find).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('getProductById()', () => {
     it('returns the product if it exists in the repository', async () => {
       const product: Product = {

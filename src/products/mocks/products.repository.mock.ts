@@ -10,6 +10,7 @@ export const productsRepositoryMockFactory: () => MockType<
 > = () => ({
   create: jest.fn((o) => o),
   save: jest.fn(async (o) => Promise.resolve(o)),
+  find: jest.fn(async () => Promise.resolve()),
   findOneBy: jest.fn(async () => Promise.resolve()),
   delete: jest.fn(async () => Promise.resolve()),
 });

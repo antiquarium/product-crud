@@ -12,6 +12,11 @@ export class ProductsService {
     private readonly productsRepository: Repository<Product>,
   ) {}
 
+  // TODO: support for filtering
+  async getProducts(): Promise<Product[]> {
+    return await this.productsRepository.find();
+  }
+
   async getProductById(id: string): Promise<Product> {
     const found = await this.productsRepository.findOneBy({ Id: id });
     if (!found)
