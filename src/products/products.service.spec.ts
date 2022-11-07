@@ -112,4 +112,31 @@ describe('ProductsService', () => {
       );
     });
   });
+
+  describe('deleteProduct()', () => {
+    it('deletes the product with given ID if it exists in the repository', async () => {
+      repositoryMock.delete.mockReturnValue({ affected: 1 });
+      const id = 'uniqueId';
+      let error: Error;
+
+      try {
+        await service.deleteProduct(id);
+      } catch (e) {
+        error = e;
+      }
+
+      expect(error).toBeFalsy();
+      expect(repositoryMock.delete).toHaveBeenCalledTimes(1);
+      expect(repositoryMock.delete).toHaveBeenCalledWith({ Id: id });
+    });
+
+    it("throws if the product doesn't exist in the repository", async () => {
+      const id = 'nonexistent';
+      repositoryMock.delete.mockReturnValue({ affected: 0 });
+
+      expect(async () => await service.deleteProduct(id)).rejects.toThrowError(
+        new NotFoundException(`Product with ID "${id}" not found.`),
+      );
+    });
+  });
 });
