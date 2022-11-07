@@ -1,9 +1,6 @@
 import { Repository } from 'typeorm';
 import { Product } from '../entities/product.entity';
-
-export type MockType<T> = {
-  [P in keyof T]?: jest.Mock<unknown>;
-};
+import { MockType } from './common';
 
 export const productsRepositoryMockFactory: () => MockType<
   Repository<Product>
