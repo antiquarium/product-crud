@@ -48,6 +48,25 @@ describe('ProductsController', () => {
     });
   });
 
+  describe('getProductById()', () => {
+    it('returns a product', async () => {
+      const id = 'uniqueId';
+      const product: Product = {
+        Name: 'product 1',
+        Price: 12.3,
+        Id: 'uniqueId',
+        UpdateDate: new Date('2022-11-06T15:08:58.893Z'),
+      };
+      service.getProductById.mockReturnValue(product);
+
+      const actual = await controller.getProductById(id);
+
+      expect(actual).toEqual(product);
+      expect(service.getProductById).toHaveBeenCalledTimes(1);
+      expect(service.getProductById).toHaveBeenCalledWith(id);
+    });
+  });
+
   describe('createProduct()', () => {
     it('creates a new product', async () => {
       const payload: CreateProductDTO = {
