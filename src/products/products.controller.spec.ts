@@ -22,6 +22,32 @@ describe('ProductsController', () => {
     service = module.get(ProductsService);
   });
 
+  describe('getProducts()', () => {
+    it('returns all products', async () => {
+      const products: Product[] = [
+        {
+          Name: 'product 1',
+          Price: 12.3,
+          Id: 'id1',
+          UpdateDate: new Date('2022-11-06T15:08:58.893Z'),
+        },
+        {
+          Name: 'product 2',
+          Price: 4.56,
+          Id: 'id2',
+          UpdateDate: new Date('2022-11-07T11:28:44.003Z'),
+        },
+      ];
+      service.getProducts.mockReturnValue(products);
+
+      const actual = await controller.getProducts();
+
+      expect(actual).toEqual(products);
+      expect(service.getProducts).toHaveBeenCalledTimes(1);
+      expect(service.getProducts).toHaveBeenCalledWith();
+    });
+  });
+
   describe('createProduct()', () => {
     it('creates a new product', async () => {
       const payload: CreateProductDTO = {
