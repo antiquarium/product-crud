@@ -5,8 +5,10 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Put,
 } from '@nestjs/common';
 import { CreateProductDTO } from './dto/create-product.dto';
+import { UpdateProductDTO } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { ProductsService } from './products.service';
 
@@ -31,5 +33,13 @@ export class ProductsController {
     @Body() createProductDTO: CreateProductDTO,
   ): Promise<Product> {
     return await this.productsService.createProduct(createProductDTO);
+  }
+
+  @Put('/:id')
+  async updateProduct(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateProductDTO: UpdateProductDTO,
+  ): Promise<Product> {
+    return await this.productsService.updateProduct(id, updateProductDTO);
   }
 }

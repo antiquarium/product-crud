@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CreateProductDTO } from './dto/create-product.dto';
+import { UpdateProductDTO } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
 import { MockType } from './mocks/common';
 import { productServiceMockFactory } from './mocks/products.service.mock';
@@ -85,6 +86,28 @@ describe('ProductsController', () => {
       expect(actual).toEqual(expected);
       expect(service.createProduct).toHaveBeenCalledTimes(1);
       expect(service.createProduct).toHaveBeenCalledWith(payload);
+    });
+  });
+
+  describe('updateProduct()', () => {
+    it('updates and returns the updated product', async () => {
+      const id = 'uniqueId';
+      const payload: UpdateProductDTO = {
+        Name: 'new name',
+        Price: 20,
+      };
+      const expected: Product = {
+        ...payload,
+        Id: id,
+        UpdateDate: new Date('2022-11-06T15:08:58.893Z'),
+      };
+      service.updateProduct.mockReturnValue(expected);
+
+      const actual = await controller.updateProduct(id, payload);
+
+      expect(actual).toEqual(expected);
+      expect(service.updateProduct).toHaveBeenCalledTimes(1);
+      expect(service.updateProduct).toHaveBeenCalledWith(id, payload);
     });
   });
 });
