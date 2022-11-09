@@ -2,8 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CreateProductDTO } from './dto/create-product.dto';
 import { UpdateProductDTO } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
-import { MockType } from './mocks/common';
-import { productServiceMockFactory } from './mocks/products.service.mock';
+import { MockType, productServiceMockFactory } from './mocks';
 import { ProductsController } from './products.controller';
 import { ProductsService } from './products.service';
 

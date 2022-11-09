@@ -5,8 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateProductDTO } from './dto/create-product.dto';
 import { UpdateProductDTO } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
-import { MockType } from './mocks/common';
-import { productsRepositoryMockFactory } from './mocks/products.repository.mock';
+import { MockType, productsRepositoryMockFactory } from './mocks';
 import { ProductsService } from './products.service';
 
 describe('ProductsService', () => {
