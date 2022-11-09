@@ -7,4 +7,5 @@ export const productServiceMockFactory: () => MockType<ProductsService> =
     getProductById: jest.fn(),
     createProduct: jest.fn(),
     updateProduct: jest.fn(),
+    deleteProduct: jest.fn(),
   });

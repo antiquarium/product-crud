@@ -110,4 +110,15 @@ describe('ProductsController', () => {
       expect(service.updateProduct).toHaveBeenCalledWith(id, payload);
     });
   });
+
+  describe('deleteProduct()', () => {
+    it('deletes a product', async () => {
+      const id = 'uniqueId';
+
+      await controller.deleteProduct(id);
+
+      expect(service.deleteProduct).toHaveBeenCalledTimes(1);
+      expect(service.deleteProduct).toHaveBeenCalledWith(id);
+    });
+  });
 });
