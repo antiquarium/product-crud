@@ -6,10 +6,10 @@ import { ProductsModule } from './products/products.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: ['.env.dev'],
+      envFilePath: [`.env.${process.env.NODE_ENV ?? 'dev'}`],
     }),
     TypeOrmModule.forRoot({
-      type: 'postgres',
+      type: process.env.DB_TYPE as 'postgres' | 'sqlite',
       database: process.env.DB_NAME,
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT,
