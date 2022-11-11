@@ -1,12 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
 import * as sqlite from 'sqlite';
 import { Database as SqliteDB } from 'sqlite3';
-import { ProductsModule } from '../src/products/products.module';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { getConfigModuleRootOpts, getTypeOrmRootOpts } from '../src/config';
+import * as request from 'supertest';
+
+import { INestApplication } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { Test, TestingModule } from '@nestjs/testing';
+import { TypeOrmModule } from '@nestjs/typeorm';
+
+import { getConfigModuleRootOpts, getTypeOrmRootOpts } from '../src/config';
+import { ProductsModule } from '../src/products/products.module';
 
 describe('ProductsController (e2e)', () => {
   let app: INestApplication;

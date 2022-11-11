@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsNumber, MaxLength, Min } from 'class-validator';
 import { Transform } from 'class-transformer';
+import { IsNotEmpty, IsNumber, MaxLength, Min } from 'class-validator';
 
 export class UpdateProductDTO {
   @IsNotEmpty()

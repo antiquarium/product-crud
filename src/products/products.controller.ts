@@ -8,6 +8,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+
 import { CreateProductDTO } from './dto/create-product.dto';
 import { UpdateProductDTO } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
