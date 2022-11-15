@@ -1,14 +1,17 @@
+import { isUUID } from 'class-validator';
 import * as request from 'supertest';
 import { Repository } from 'typeorm';
 
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 
 import { getConfigModuleRootOpts, getTypeOrmRootOpts } from '../src/config';
+import { CreateProductDTO } from '../src/products/dto/create-product.dto';
 import { Product } from '../src/products/entities/product.entity';
 import { ProductsModule } from '../src/products/products.module';
+import { dateToSeconds } from './helpers';
 
 describe('ProductsController (e2e)', () => {
   let app: INestApplication;
@@ -25,6 +28,7 @@ describe('ProductsController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
     productsRepository = app.get(getRepositoryToken(Product));
     server = app.getHttpServer();
     await app.init();
@@ -114,6 +118,103 @@ describe('ProductsController (e2e)', () => {
         statusCode: 400,
         error: 'Bad Request',
         message: 'Validation failed (uuid is expected)',
+      });
+    });
+  });
+
+  describe('/products (POST)', () => {
+    it('responds with a newly created product', async () => {
+      /* SQLite timestamps are by default precise only up to seconds */
+      const beforeCreated = dateToSeconds(new Date());
+      const payload: CreateProductDTO = {
+        Name: 'bamboo shoot',
+        Price: 50,
+      };
+
+      const response = await request(server).post('/products').send(payload);
+
+      expect(response.status).toEqual(201);
+      expect(response.body.Name).toEqual(payload.Name);
+      expect(response.body.Price).toEqual(payload.Price);
+      expect(new Date(response.body.UpdateDate).getTime()).toBeGreaterThan(
+        beforeCreated,
+      );
+      expect(isUUID(response.body.Id)).toBeTruthy();
+    });
+
+    /* TODO: decide where to test validation; component test for the whole module was the first candidate
+      since apparently there is no way to run validation within controller's unit tests */
+    it('responds with "Bad request" if Name is absent', async () => {
+      const response = await request(server)
+        .post('/products')
+        .send({ Price: 1 });
+
+      expect(response.status).toEqual(400);
+      expect(response.body).toEqual({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: [
+          'Name must be shorter than or equal to 100 characters',
+          'Name should not be empty',
+        ],
+      });
+    });
+
+    it('responds with "Bad request" if Name is longer than 100 characters', async () => {
+      const response = await request(server)
+        .post('/products')
+        .send({ Name: '*'.repeat(101), Price: 1 });
+
+      expect(response.status).toEqual(400);
+      expect(response.body).toEqual({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: ['Name must be shorter than or equal to 100 characters'],
+      });
+    });
+
+    it('responds with "Bad request" if Price is absent', async () => {
+      const response = await request(server)
+        .post('/products')
+        .send({ Name: 'SUGDW apple' });
+
+      expect(response.status).toEqual(400);
+      expect(response.body).toEqual({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: [
+          'Price must not be less than 0',
+          'Price must be a number conforming to the specified constraints',
+        ],
+      });
+    });
+
+    it('responds with "Bad request" if Price is negative', async () => {
+      const response = await request(server)
+        .post('/products')
+        .send({ Name: 'SUGDW apple', Price: -1 });
+
+      expect(response.status).toEqual(400);
+      expect(response.body).toEqual({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: ['Price must not be less than 0'],
+      });
+    });
+
+    it('responds with "Bad request" if Price is not a number', async () => {
+      const response = await request(server)
+        .post('/products')
+        .send({ Name: 'SUGDW apple', Price: 'NaN' });
+
+      expect(response.status).toEqual(400);
+      expect(response.body).toEqual({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: [
+          'Price must not be less than 0',
+          'Price must be a number conforming to the specified constraints',
+        ],
       });
     });
   });
