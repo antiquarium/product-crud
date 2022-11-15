@@ -59,4 +59,62 @@ describe('ProductsController (e2e)', () => {
       expect(response.body).toEqual(JSON.parse(JSON.stringify(products)));
     });
   });
+
+  describe('/products/{id} (GET)', () => {
+    it('responds with the product with given ID if it exists', async () => {
+      const product: Product = {
+        Id: 'fed98f29-732d-40e5-98d2-19e1d61b9f6a',
+        Name: 'bamboo shoot',
+        Price: 50,
+        UpdateDate: new Date('2022-11-14T16:00:00.000Z'),
+      };
+      await productsRepository.save(product);
+
+      const response = await request(server).get(`/products/${product.Id}`);
+
+      expect(response.status).toEqual(200);
+      expect(response.body).toEqual(JSON.parse(JSON.stringify(product)));
+    });
+
+    it('responds with "Not found" if product with given ID doesn\'t exist', async () => {
+      const id = 'fed98f29-732d-40e5-98d2-19e1d61b9f6b';
+      const product: Product = {
+        Id: 'fed98f29-732d-40e5-98d2-19e1d61b9f6a',
+        Name: 'bamboo shoot',
+        Price: 50,
+        UpdateDate: new Date('2022-11-14T16:00:00.000Z'),
+      };
+      await productsRepository.save(product);
+
+      const response = await request(server).get(`/products/${id}`);
+
+      expect(response.status).toEqual(404);
+      expect(response.body).toEqual({
+        statusCode: 404,
+        error: 'Not Found',
+        message:
+          'Product with ID "fed98f29-732d-40e5-98d2-19e1d61b9f6b" not found.',
+      });
+    });
+
+    it('responds with "Bad request" if given ID is not a proper UUID', async () => {
+      const id = 'bad-id';
+      const product: Product = {
+        Id: 'fed98f29-732d-40e5-98d2-19e1d61b9f6a',
+        Name: 'bamboo shoot',
+        Price: 50,
+        UpdateDate: new Date('2022-11-14T16:00:00.000Z'),
+      };
+      await productsRepository.save(product);
+
+      const response = await request(server).get(`/products/${id}`);
+
+      expect(response.status).toEqual(400);
+      expect(response.body).toEqual({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: 'Validation failed (uuid is expected)',
+      });
+    });
+  });
 });
